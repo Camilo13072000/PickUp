@@ -1,0 +1,42 @@
+body{
+    background-color: #eaffff;
+}
+.cat:hover{ 
+    background-color:#353b48;
+    color: #fff;
+    transition: 0.5s;
+}
+.prese{
+    text-align: center;
+    align-content: center;
+}
+.pedido{
+    margin: auto;
+    width: 90%;
+    height: 50px;
+    background: cyan;
+}
+.nombre{
+    margin: auto;
+    width: 90%;
+    height: 50px;
+    background: yellow;
+}
+.datos{
+    text-align: center;
+    margin: auto;
+    width: 90%;
+    height: 250px;
+    background: blanchedalmond;
+}
+#lcate{
+    text-align: center;
+    align-content: center;
+}
+h1.titulo{
+    text-align: center;
+    align-content: center;
+}
+
+
+

@@ -27,14 +27,14 @@ public class Mod_LoginCliente {
         }
         return Uncliente;
     }
-    public ArrayList<Mod_GetSetDomicilio>ConsultarDomicilios(Mod_GetSetDomicilio dom){
+    public ArrayList<Mod_GetSetDomicilio>ConsultarDomicilios(String cli){
         ArrayList<Mod_GetSetDomicilio> domisilioscli= new ArrayList<>();
         try {
-            ps=cnn.prepareStatement ("Select dom_id,dom_total_general,dom_estado,dom_costo_domicilio,dom_fecha_inicio,dom_fecha_salida,dom_fecha_entrega,dom_cli_id,dom_men_id from tb_domicilio where dom_cli_id='"+dom.getDom_cli_id()+"'");
+            ps=cnn.prepareStatement ("Select dom_id,dom_total_general,dom_estado,dom_costo_domicilio,dom_fecha_inicio,dom_fecha_salida,dom_fecha_entrega,dom_cli_id,men_nombre from tb_domicilio inner join tb_mensajero on (men_id=dom_men_id) where dom_cli_id='"+cli+"'");
             rs=ps.executeQuery();
             //JOptionPane.showMessageDialog(null, "Datos Consultados");
             while(rs.next()){
-                Mod_GetSetDomicilio ConsulDomi=new Mod_GetSetDomicilio(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
+                Mod_GetSetDomicilio ConsulDomi=new Mod_GetSetDomicilio(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
                 domisilioscli.add(ConsulDomi);
             }
         } catch (Exception e) {
@@ -42,40 +42,11 @@ public class Mod_LoginCliente {
         }
         return domisilioscli;
     }
-    public ArrayList<Mod_GetSetProductos>ConsultarProductos(){
-        ArrayList<Mod_GetSetProductos> produccli=new ArrayList<>();
-        try {
-            ps=cnn.prepareStatement("Select pro_nombre,pro_foto from tb_productos");
-            rs=ps.executeQuery();
-            //JOptionPane.showMessageDialog(null, "Datos Consultados");
-            while(rs.next()){
-                Mod_GetSetProductos ConsulProd=new Mod_GetSetProductos(rs.getString(1), rs.getString(2));
-                produccli.add(ConsulProd);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-        return produccli;
-    }
-    public ArrayList<Mod_GetSetCategorias>ConsultarCategorias(){
-        ArrayList<Mod_GetSetCategorias> catecli=new ArrayList<>();
-        try {
-            ps=cnn.prepareStatement("Select cate_nombre,cate_foto from tb_categoria");
-            rs=ps.executeQuery();
-            while (rs.next()) {
-                Mod_GetSetCategorias ConsulCate=new Mod_GetSetCategorias(rs.getString(1), rs.getString(2));
-                catecli.add(ConsulCate);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-        return catecli;
-    }
     
     public ArrayList<Mod_GetSetActualizarCliente>ConsultarDatosCliente(String cli_id){
         ArrayList<Mod_GetSetActualizarCliente> ListaCliente=new ArrayList<>();
         try {
-            ps=cnn.prepareStatement("Select Cli_id,Cli_documento,Cli_nombre,Cli_genero,Cli_telefono,Cli_email,Cli_direccion_1,Cli_barrio_1,Cli_descipcion_1,Cli_direccion_2,Cli_barrio_2,Cli_descipcion_2,usu_nombre,usu_password,usu_foto from tb_cliente inner join tb_usuario on (Usu_id=cli_usu_id) where cli_id='"+cli_id+"'");
+            ps=cnn.prepareStatement("Select Cli_id,Cli_documento,Cli_nombre,Cli_genero,Cli_telefono,Cli_email,Cli_direccion_1,Cli_barrio_1,Cli_descipcion_1,Cli_direccion_2,Cli_barrio_2,Cli_descipcion_2,usu_nombre,(aes_decrypt(usu_password,'AES')),usu_foto from tb_cliente inner join tb_usuario on (Usu_id=cli_usu_id) where cli_id='"+cli_id+"'");
             rs=ps.executeQuery();
             while(rs.next()){
                 Mod_GetSetActualizarCliente ConsultaCli=new Mod_GetSetActualizarCliente(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15));
@@ -122,13 +93,27 @@ public class Mod_LoginCliente {
         int dat;
         try {
             ps=cnn.prepareStatement("Update tb_cliente inner join tb_usuario on (usu_id=cli_usu_id) set usu_nombre='"+actcli.getUsu_nombre()+"',"
-                    + "usu_password='"+actcli.getUsu_password()+"', usu_foto='"+actcli.getUsu_foto()+"',"
-                    + "cli_nombre='"+actcli.getCli_nombre()+"', cli_genero='"+actcli.getCli_genero()+"'"
-                    + ",cli_telefono='"+actcli.getCli_telefono()+"',cli_email='"+actcli.getCli_email()+"'"
+                    + "usu_password=aes_encrypt('"+actcli.getUsu_password()+"','AES'), cli_telefono='"+actcli.getCli_telefono()+"',"
+                    + "cli_email='"+actcli.getCli_email()+"'"
                     + ",cli_direccion_1='"+actcli.getCli_direccion_1()+"', cli_barrio_1='"+actcli.getCli_barrio_1()+"'"
                     + ",cli_descipcion_1='"+actcli.getCli_descripcion_1()+"',cli_direccion_2='"+actcli.getCli_direccion_2()+"'"
                     + ",cli_barrio_2='"+actcli.getCli_barrio_2()+"',cli_descipcion_2='"+actcli.getCli_descripcion_2()+"'"
                     + " where cli_id='"+actcli.getCli_id()+"'");
+            dat=ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Datos actualizados Modelo");
+            if(dat>0){
+                reg=true;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return reg;
+    }
+    public boolean ActualizarFotoCliente (Mod_GetSetActualizarCliente actfot){
+        boolean reg=false;
+        int dat;
+        try {
+            ps=cnn.prepareStatement("call ActualizarFotoCliente('"+actfot.getUsu_foto()+"','"+actfot.getCli_id()+"')");
             dat=ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "Datos actualizados Modelo");
             if(dat>0){

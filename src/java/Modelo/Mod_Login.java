@@ -16,8 +16,9 @@ public class Mod_Login {
     public ArrayList<Mod_GetSetUsuarios>Login(Mod_GetSetUsuarios gs){
         ArrayList<Mod_GetSetUsuarios> list=new ArrayList<>();
         try {
-            ps=cnn.prepareStatement("Select *from tb_usuario where usu_nombre='"+gs.getUsu_nombre()+"' and"
-                    + " usu_password='"+gs.getUsu_password()+"'");
+            ps=cnn.prepareStatement("Select usu_id,usu_nombre,(aes_decrypt(usu_password,\"AES\"))usu_password,usu_rol,usu_estado,usu_foto"
+                    + " from tb_usuario where usu_nombre='"+gs.getUsu_nombre()+"' and"
+                    + " (aes_decrypt(usu_password,'AES'))='"+gs.getUsu_password()+"'");
             rs=ps.executeQuery();
             while(rs.next()){
                 Mod_GetSetUsuarios ges=new Mod_GetSetUsuarios(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));

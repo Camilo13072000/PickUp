@@ -14,17 +14,26 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-success">
+            <a class="navbar-brand" href="../index.jsp">PickUp</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+        
         <h1>PickUp</h1>
         <h3>Registrar</h1>
+        
         <div class="container">
-            <form action="../Con_Usuario" method="POST">
+            <form action="../Con_Usuario" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nomb">Nombre de usuario</label>
                 <input type="text" class="form-control" id="nomb" name="nom">
             </div> 
             <div class="form-group">
                 <label for="passw">Contraseña</label>
-                <input type="text" class="form-control" id="passw" name="pass">
+                <input type="password" class="form-control" id="passw" name="pass">
             </div> 
             <div class="form-group">
                 <input type="hidden" class="form-control" id="" name="rol" value="Cliente">
@@ -34,8 +43,8 @@
             </div> 
             <div class="form-group">
                 <label for="Foto">Foto</label>
-                <input type="file" class="form-control" id="" name="">
-                <input type="hidden" class="form-control" id="Foto" name="fot" value="Foto">
+                <!--<input type="file" class="form-control" id="" name="">-->
+                <input type="file" class="form-control" id="Foto" name="fot" accept="image/*">
             </div> 
             
             <button type="submit" name="reg" class="btn form-control">Registrar</button>

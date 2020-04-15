@@ -1,4 +1,9 @@
 
+<%@page import="Modelo.Mod_TiposProveedores"%>
+<%@page import="Modelo.Mod_GetSetTiposProveedores"%>
+<%@page import="Modelo.Mod_Categorias"%>
+<%@page import="java.util.List"%>
+<%@page import="Modelo.Mod_Productos"%>
 <%@page import="javax.swing.JOptionPane"%>
 <%@page import="Modelo.Mod_GetSetCategorias"%>
 <%@page import="Modelo.Mod_LoginCliente"%>
@@ -27,19 +32,30 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>PickUp</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+        <link rel="stylesheet" type="text/css"  href="../boostrap/css/bootstrap.css">
+        <link rel="stylesheet" href="../css/estilos.css">
+        
+        
     </head>
     <body>
         <%
-            int UsuId;
+            int UsuId,Tam_carrito;
+            String foto;
             String Cli_Id;
+            
             HttpSession cli=request.getSession(false);
             UsuId=(int)cli.getAttribute("VarId");
+            foto=(String)cli.getAttribute("VarFot");
             Cli_Id=(String)cli.getAttribute("VarIdCli");
-            JOptionPane.showMessageDialog(null, Cli_Id);
+            Tam_carrito=(Integer)cli.getAttribute("contador");
+            
+            //JOptionPane.showMessageDialog(null, UsuId);
+            
         %>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        
+        <nav class="navbar navbar-expand-lg navbar-light bg-success">
             <a class="navbar-brand" href="#">PickUp</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
@@ -53,7 +69,20 @@
                     </form>
                 </li>
                 <li class="nav-item">
-                    <form><button class="btn btn.default" name="Ped" type="submit">Pedidos</button></form>
+                    <!--<a href="PedidosCliente.jsp" class="btn btn.default">Pedidos</a>-->
+                    <form action="../Con_Cliente" method="POST">
+                        <input type="hidden" name="cli_id" value="<%=Cli_Id%>">
+                        <button class="btn btn.default" name="Pedidos" type="submit">Pedidos</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form action="../Con_Carrito" method="POST">
+                        <input type="hidden" value="<%=foto%>" name="Foto">
+                        <input type="hidden" value="<%=Cli_Id%>" name="clid">
+                        <button class="btn  btn.default" type="submit" name="Consulta">
+                            <i class="fas fa-cart-plus"  style="color: #fff;margin: 3px"><label>(<%=Tam_carrito%>)</label></i>
+                        </button>
+                    </form>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -68,104 +97,68 @@
                 </li>
                 <li class="nav-item">
                     <form action="../Con_Login" method="POST">
-                        <button type="submit" name="Actu" class="btn btn.default">Actualizar</button>
+                        <input type="hidden" name="Cli_Id" value="<%=Cli_Id%>">
+                        <button type="submit" name="ActualizarCliente" class="btn btn.default">Actualizar</button>
                     </form>
                 </li>
               </ul>
               <form class="form-inline my-2 my-lg-0">
+                  <img src="../<%=foto%>" class="mr-sm-4  rounded-circle" width="35px">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
               </form>
             </div>
           </nav>
-        <% if(request.getParameter("Ped")!=null){ %>
-        <table class="table">
-            <tr>
-                <thead class="thead-dark">
-                    <th scope="col">Id</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Costo</th>
-                    <th scope="col">Fecha inicio</th>
-                    <th scope="col">Fecha Salida</th>
-                    <th scope="col">Fecha Entrega</th>
-                    <th scope="col">Id Cliente</th>
-                    <th scope="col">Id Mensajero</th>
-                </thead>
-            </tr>
-            <%
-                ArrayList<Mod_GetSetDomicilio> ListaDomi=new ArrayList();
-                Mod_GetSetDomicilio gs=new Mod_GetSetDomicilio(Cli_Id);
-                Mod_LoginCliente dom=new Mod_LoginCliente();
-                ListaDomi=dom.ConsultarDomicilios(gs);
+            
+            <br><br>
+            
+            <div class="container">    
+            <div class="row">
+                <%
+                    ArrayList<Mod_GetSetTiposProveedores> ListaProveedor=new ArrayList();
+                    Mod_GetSetTiposProveedores gsTipo=new Mod_GetSetTiposProveedores();
+                    Mod_TiposProveedores Tipo=new Mod_TiposProveedores();
+                    ListaProveedor=Tipo.ConsultarTiposProveedores();
+                    for(int i=0;i<ListaProveedor.size();i++){
+                        gsTipo=ListaProveedor.get(i);
+                %>
+                <div class="col-sm-6 col-6 col-md-4 col-lg-4 col-xl-3">
+                    <div class="card cat" style="width: 13rem;">
+                        <!--<div class="card-header">
+                            
+                        </div>
+                        <div class="card-body">
+                            <img src="<%//=gese.getCate_foto()%>" class="card-img-bottom" width="200" height="180">
+                        </div>-->
+                        <div class="card-body rounded" style="margin: -18px">
+                            <form action="../Con_Proveedor" method="POST">
+                                <input type="hidden" value="<%=gsTipo.getTipo_codigo()%>" name="TipoCod">
+                                <input type="hidden" value="<%=gsTipo.getTipo_nombre()%>" name="TipoNom">
+                                <input type="hidden" value="<%=UsuId%>" name="usuid">
+                                <input type="hidden" value="<%=Cli_Id%>" name="clid">
+                                <input type="hidden" value="<%=foto%>" name="foto">
+                                <input type="hidden" value="<%=Tam_carrito%>" name="car">
+                                <button type="submit" class="btn btn-block" name="TipoPro">
+                                    <img src="../<%=gsTipo.getTipo_foto()%>" class="card-img-bottom rounded" width="150" height="150">
+                                </button>
+                                    <h5 style="margin-left: 14px"><%=gsTipo.getTipo_nombre()%></h5>
+                            </form>
+                            <!--<button class="btn btn-info">Agregar al carrito</button>
+                            <button class="btn btn-danger">Comprar</button>-->
+                        </div>
+                    </div>
+                    <br>    
+                </div>
                 
-                for(int i=0;i<ListaDomi.size();i++){
-                    gs=ListaDomi.get(i);
-            %>
-            <tr>
-                <tbody>
-                    <td scope="row"><%=gs.getDom_id()%></td>
-                    <td><%=gs.getDom_total_general()%></td>
-                    <td><%=gs.getDom_estado()%></td>
-                    <td><%=gs.getDom_costo_domicilio()%></td>
-                    <td><%=gs.getDom_fecha_inicio()%></td>
-                    <td><%=gs.getDom_fecha_salida()%></td>
-                    <td><%=gs.getDom_fecha_entrega()%></td>
-                    <td><%=gs.getDom_cli_id()%></td>
-                    <td><%=gs.getDom_men_id()%></td>
-                </tbody>
-            </tr>
             <% } %>
-        </table>
-        <% } %>
-        <table class="table">
-            <tr>
-                <thead class="thead-dark">
-                    <th>Nombre</th>
-                    <th>Foto</th>
-                </thead>
-            </tr>
-            <%
-                ArrayList<Mod_GetSetProductos> ListaProd=new ArrayList();
-                Mod_GetSetProductos ges=new Mod_GetSetProductos();
-                Mod_LoginCliente pro=new Mod_LoginCliente();
-                ListaProd=pro.ConsultarProductos();
-                for(int i=0;i<ListaProd.size();i++){
-                    ges=ListaProd.get(i);
-            %>
-            <tr>
-                <tbody>
-                    <td><%=ges.getPro_nombre()%></td>
-                    <td><%=ges.getPro_foto()%></td>
-                </tbody>
-            </tr>
-            <% } %>
-        </table>
-        <table class="table">
-            <tr>
-                <thead class="thead-dark">
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Foto</th>
-                </thead>
-            </tr>
-            <%
-                ArrayList<Mod_GetSetCategorias> ListaCate=new ArrayList();
-                Mod_GetSetCategorias gese=new Mod_GetSetCategorias();
-                Mod_LoginCliente cate=new Mod_LoginCliente();
-                ListaCate=cate.ConsultarCategorias();
-                for(int i=0;i<ListaCate.size();i++){
-                    gese=ListaCate.get(i);
-            %>
-            <tr>
-                <tbody>
-                    <td><%=gese.getCate_nombre()%></td>
-                    <td><%=gese.getCate_foto()%></td>
-                </tbody>
-            </tr>
-            <% } %>
-        </table>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            </div>
+        </div>
+             
+        <script src="../js/jquery-3.4.1.min.js"></script>
+        <script src="../js/main.js"></script>
+        <script src="../boostrap/js/jquery-3.3.1.slim.min.js"></script>
+        <script src="../boostrap/js/popper.min.js"></script>
+        <script src="../boostrap/js/bootstrap.min.js"></script>
+    
     </body>
 </html>

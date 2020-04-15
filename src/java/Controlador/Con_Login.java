@@ -6,9 +6,11 @@
 package Controlador;
 
 import Modelo.Mod_GetSetLoginCliente;
+import Modelo.Mod_GetSetMensajero;
 import Modelo.Mod_GetSetUsuarios;
 import Modelo.Mod_Login;
 import Modelo.Mod_LoginCliente;
+import Modelo.Mod_Mensajero;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ import javax.swing.JOptionPane;
  */
 @WebServlet(name = "Con_Login", urlPatterns = {"/Con_Login"})
 public class Con_Login extends HttpServlet {
-    int id;
-    String nom,pass,rol,est,fot;
+    int usu_id;
+    String usu_nombre,usu_password,usu_rol,usu_estado,usu_foto;
     String Cli_id,Cli_documento,Cli_nombre,Cli_genero,Cli_telefono,Cli_email,Cli_direccion_1,Cli_barrio_1,Cli_descripcion_1,Cli_direccion_2,Cli_barrio_2,Cli_descripcion_2,Cli_usu_id;
+    int men_id,men_cedula,men_usu_id;
+    String men_nombre,men_telefono,men_direccion,men_barrio,men_descripcion,men_email;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -83,18 +87,18 @@ public class Con_Login extends HttpServlet {
             if(arr.size()>0){
                 for(int i=0;i<arr.size();i++){
                     gs=arr.get(i);
-                    id=gs.getUsu_id();
-                    nom=gs.getUsu_nombre();
-                    pass=gs.getUsu_password();
-                    rol=gs.getUsu_rol();
-                    est=gs.getUsu_estado();
-                    fot=gs.getUsu_foto();
+                    usu_id=gs.getUsu_id();
+                    usu_nombre=gs.getUsu_nombre();
+                    usu_password=gs.getUsu_password();
+                    usu_rol=gs.getUsu_rol();
+                    usu_estado=gs.getUsu_estado();
+                    usu_foto=gs.getUsu_foto();
                 }
             }
             ArrayList<Mod_GetSetLoginCliente>listacliente=new ArrayList<>();
             Mod_GetSetLoginCliente datoscliente=new Mod_GetSetLoginCliente();
             Mod_LoginCliente uncliente=new Mod_LoginCliente();
-            listacliente=uncliente.consultaUnCliente(id);
+            listacliente=uncliente.consultaUnCliente(usu_id);
             if(listacliente.size()>0){
                 for(int i=0;i<listacliente.size();i++){
                     datoscliente=listacliente.get(i);
@@ -112,77 +116,94 @@ public class Con_Login extends HttpServlet {
                     Cli_descripcion_2=datoscliente.getCli_descripcion_2();
                 }
             }
+            ArrayList<Mod_GetSetMensajero>ListaMensajero=new ArrayList<>();
+            Mod_GetSetMensajero DatosMensajero=new Mod_GetSetMensajero();
+            Mod_Mensajero Mensajero=new Mod_Mensajero();
+            ListaMensajero=Mensajero.DatosMensajero(usu_id);
+            if(ListaMensajero.size()>0){
+                for(int i=0;i<ListaMensajero.size();i++){
+                    DatosMensajero=ListaMensajero.get(i);
+                    men_id=DatosMensajero.getMen_id();
+                    men_cedula=DatosMensajero.getMen_cedula();
+                    men_nombre=DatosMensajero.getMen_nombre();
+                    men_direccion=DatosMensajero.getMen_direccion();
+                    men_barrio=DatosMensajero.getMen_barrio();
+                    men_descripcion=DatosMensajero.getMen_descripcion();
+                    men_telefono=DatosMensajero.getMen_telefono();
+                    men_email=DatosMensajero.getMen_email();
+                    men_usu_id=DatosMensajero.getMen_usu_id();
+                }
+            }
             
-            if(u.equals(nom) && c.equals(pass)){
-                if(est.equals("Activo")){
-                    if(rol.equals("Administrador")){
+            
+            
+            if(u.equals(usu_nombre) && c.equals(usu_password)){
+                if(usu_estado.equals("Activo")){
+                    if(usu_rol.equals("Administrador")){
                         HttpSession Usuario=request.getSession(true);
-                        Usuario.setAttribute("VarId", id);
-                        Usuario.setAttribute("VarNom", nom);
-                        Usuario.setAttribute("VarPass", pass);
-                        Usuario.setAttribute("VarRol", rol);
-                        Usuario.setAttribute("VarEst", est);
-                        Usuario.setAttribute("VarFot", fot);
+                        Usuario.setAttribute("VarId", usu_id);
+                        Usuario.setAttribute("VarNom", usu_nombre);
+                        Usuario.setAttribute("VarPass", usu_password);
+                        Usuario.setAttribute("VarRol", usu_rol);
+                        Usuario.setAttribute("VarEst", usu_estado);
+                        Usuario.setAttribute("VarFot", usu_foto);
                         response.sendRedirect("");
-                    }else if(rol.equals("Cliente")){
+                    }else if(usu_rol.equals("Cliente")){
+                        int contador = 0;
                         HttpSession Usuario=request.getSession(true);
-                        Usuario.setAttribute("VarId", id);
-                        Usuario.setAttribute("VarNom", nom);
-                        Usuario.setAttribute("VarPass", pass);
-                        Usuario.setAttribute("VarRol", rol);
-                        Usuario.setAttribute("VarEst", est);
-                        Usuario.setAttribute("VarFot", fot);
+                        Usuario.setAttribute("VarId", usu_id);
+                        Usuario.setAttribute("VarNom", usu_nombre);
+                        Usuario.setAttribute("VarPass", usu_password);
+                        Usuario.setAttribute("VarRol", usu_rol);
+                        Usuario.setAttribute("VarEst", usu_estado);
+                        Usuario.setAttribute("VarFot", usu_foto);
                         Usuario.setAttribute("VarIdCli", Cli_id);
                         Usuario.setAttribute("VarDocCli", Cli_documento);
                         Usuario.setAttribute("VarNomCli", Cli_nombre);
+                        Usuario.setAttribute("contador", contador);
                         response.sendRedirect("Cliente/vi_Cliente.jsp");
-                    } else if(rol.equals("Mensajero")){
+                    } else if(usu_rol.equals("Mensajero")){
                         HttpSession Usuario=request.getSession(true);
-                        Usuario.setAttribute("VarId", id);
-                        Usuario.setAttribute("VarNom", nom);
-                        Usuario.setAttribute("VarPass", pass);
-                        Usuario.setAttribute("VarRol", rol);
-                        Usuario.setAttribute("VarEst", est);
-                        Usuario.setAttribute("VarFot", fot);
-                        response.sendRedirect("");
-                    }else if(rol.equals("Proveedor")){
+                        Usuario.setAttribute("VarId", usu_id);
+                        Usuario.setAttribute("VarNom", usu_nombre);
+                        Usuario.setAttribute("VarPass", usu_password);
+                        Usuario.setAttribute("VarRol", usu_rol);
+                        Usuario.setAttribute("VarEst", usu_estado);
+                        Usuario.setAttribute("VarFot", usu_foto);
+                        Usuario.setAttribute("men_id", men_id);
+                        Usuario.setAttribute("men_nombre", men_nombre);
+                        response.sendRedirect("Mensajero/Vi_mensajero.jsp");
+                    }else if(usu_rol.equals("Proveedor")){
                         HttpSession Usuario=request.getSession(true);
-                        Usuario.setAttribute("VarId", id);
-                        Usuario.setAttribute("VarNom", nom);
-                        Usuario.setAttribute("VarPass", pass);
-                        Usuario.setAttribute("VarRol", rol);
-                        Usuario.setAttribute("VarEst", est);
-                        Usuario.setAttribute("VarFot", fot);
+                        Usuario.setAttribute("VarId", usu_id);
+                        Usuario.setAttribute("VarNom", usu_nombre);
+                        Usuario.setAttribute("VarPass", usu_password);
+                        Usuario.setAttribute("VarRol", usu_rol);
+                        Usuario.setAttribute("VarEst", usu_estado);
+                        Usuario.setAttribute("VarFot", usu_foto);
                         response.sendRedirect("");
                     }
                 }else{
                     JOptionPane.showMessageDialog(null, "Su usario esta inactivo");
-                    response.sendRedirect("index");
+                    response.sendRedirect("index.jsp");
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "Sus datos son incorectos");
-                response.sendRedirect("index");
+                response.sendRedirect("index.jsp");
             }
         }
         
-        if(request.getParameter("Actu")!=null){
+        if(request.getParameter("ActualizarCliente")!=null){
+            Cli_id=request.getParameter("Cli_Id");
             HttpSession ActualizarCliente=request.getSession(true);
-            /*ActualizarCliente.setAttribute("VarUsuNom", nom);
-            ActualizarCliente.setAttribute("VarUsuPass", pass);
-            ActualizarCliente.setAttribute("VarUsuFoto", fot);*/
             ActualizarCliente.setAttribute("VarCliId", Cli_id);
-            /*ActualizarCliente.setAttribute("VarCliDoc", Cli_documento);
-            ActualizarCliente.setAttribute("VarCliNom", Cli_nombre);
-            ActualizarCliente.setAttribute("VarCliGen", Cli_genero);
-            ActualizarCliente.setAttribute("VarCliTel", Cli_telefono);
-            ActualizarCliente.setAttribute("VarCliEma", Cli_email);
-            ActualizarCliente.setAttribute("VarCliDir", Cli_direccion_1);
-            ActualizarCliente.setAttribute("VarCliBar", Cli_barrio_1);
-            ActualizarCliente.setAttribute("VarCliDes", Cli_descripcion_1);
-            ActualizarCliente.setAttribute("VarCliDir2", Cli_direccion_2);
-            ActualizarCliente.setAttribute("VarCliBar2", Cli_barrio_2);
-            ActualizarCliente.setAttribute("VarCliDes2", Cli_descripcion_2);*/
             response.sendRedirect("Cliente/ActualizarCliente.jsp");
+            
+        }
+        if(request.getParameter("ActualizarMensajero")!=null){
+            HttpSession ActualizarCliente=request.getSession(true);
+            ActualizarCliente.setAttribute("Men_Id", men_id);
+            response.sendRedirect("Mensajero/ActualizarMensajero.jsp");
             
         }
     }

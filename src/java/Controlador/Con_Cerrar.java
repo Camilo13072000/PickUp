@@ -73,6 +73,8 @@ public class Con_Cerrar extends HttpServlet {
             cerr.removeAttribute("VarRol");
             cerr.removeAttribute("VarEst");
             cerr.removeAttribute("VarFot");
+            cerr.removeAttribute("contador");
+            
             cerr.invalidate();
             response.sendRedirect("index.jsp");
             

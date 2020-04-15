@@ -4,6 +4,8 @@
     Author     : Camilo Martinez
 --%>
 
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
 <%@page import="javax.swing.JOptionPane"%>
 <%@page import="Modelo.Mod_LoginUsuario"%>
 <%@page import="Modelo.Mod_GetSetUsuarios"%>
@@ -18,8 +20,26 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <h1></h1>
         
+        <nav class="navbar navbar-expand-lg navbar-light bg-success">
+            <a class="navbar-brand" href="../index.jsp">PickUp</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+        
+        <%
+            Date dNow = new Date();
+            SimpleDateFormat ft =new SimpleDateFormat ("MM-dd");
+            String currentDate = ft.format(dNow);
+            SimpleDateFormat aac =new SimpleDateFormat ("yyyy");
+            String currentYear = aac.format(dNow);
+            
+            int currentYear1=Integer.parseInt(currentYear)-14;
+         %>
+         
+         <h1></h1>
+         
         <%  String UsuS;
             HttpSession UsuSe=request.getSession(false);
             UsuS=(String)UsuSe.getAttribute("NomUsu");
@@ -40,20 +60,18 @@
                  <input class="form-control" type="hidden" name="UsuId" value="<%=gs.getUsu_id()%>">
                  
             
-                <% JOptionPane.showMessageDialog(null, gs.getUsu_id()); 
-                    }
-                %>
+                <% } %>
             <div class="form-group">
                 <label for="Doc">Documento</label>
                 <input type="number" class="form-control" id="Doc" name="docu">
             </div>
             <div class="form-group">
                 <label for="Nom">Nombre</label>
-                <input type="text" class="form-control" id="Nom" name="Nomb">
+                <input type="text" class="form-control" id="Nom" name="Nomb" pattern="[az-AZ ]+">
             </div>
             <div class="form-group">
                 <label for="Fec">Fecha de Nacimiento</label>
-                <input type="date" class="form-control" id="Fec" name="fecnac">
+                <input type="date" class="form-control" id="Fec" name="fecnac" max="<%=currentYear1%>-<%=currentDate%>" min="">
             </div>
             <div class="form-group">
                 <label for="Gen">Genero</label>
@@ -65,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label for="Tel">Telefono</label>
-                <input type="text" class="form-control" id="Tel" name="telef">
+                <input type="number" class="form-control" id="Tel" name="telef">
             </div>
             <div class="form-group">
                 <label for="corr">Email</label>

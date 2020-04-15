@@ -21,6 +21,12 @@ public class Mod_GetSetProductos {
     public Mod_GetSetProductos() {
     }
 
+    public Mod_GetSetProductos(String pro_nombre, String pro_foto, String pro_codigo) {
+        this.pro_nombre = pro_nombre;
+        this.pro_foto = pro_foto;
+        this.pro_codigo = pro_codigo;
+    }
+    
     public Mod_GetSetProductos(String pro_nombre, String pro_foto) {
         this.pro_nombre = pro_nombre;
         this.pro_foto = pro_foto;

@@ -35,7 +35,7 @@ public class Mod_GetSetActualizarCliente {
         this.usu_password = usu_password;
         this.usu_foto = usu_foto;
     }
-
+    
     public Mod_GetSetActualizarCliente(String Cli_documento, String Cli_nombre, String Cli_genero, String Cli_telefono, String Cli_email, String Cli_direccion_1, String Cli_barrio_1, String Cli_descripcion_1, String Cli_direccion_2, String Cli_barrio_2, String Cli_descripcion_2, String usu_nombre, String usu_password, String usu_foto) {
         this.Cli_documento = Cli_documento;
         this.Cli_nombre = Cli_nombre;
@@ -53,12 +53,31 @@ public class Mod_GetSetActualizarCliente {
         this.usu_foto = usu_foto;
     }
 
-    
-    
-    public Mod_GetSetActualizarCliente() {
+    public Mod_GetSetActualizarCliente(String Cli_id, String Cli_telefono, String Cli_email, String Cli_direccion_1, String Cli_barrio_1, String Cli_descripcion_1, String Cli_direccion_2, String Cli_barrio_2, String Cli_descripcion_2, String usu_nombre, String usu_password, String usu_foto) {
+        this.Cli_id = Cli_id;
+        this.Cli_telefono = Cli_telefono;
+        this.Cli_email = Cli_email;
+        this.Cli_direccion_1 = Cli_direccion_1;
+        this.Cli_barrio_1 = Cli_barrio_1;
+        this.Cli_descripcion_1 = Cli_descripcion_1;
+        this.Cli_direccion_2 = Cli_direccion_2;
+        this.Cli_barrio_2 = Cli_barrio_2;
+        this.Cli_descripcion_2 = Cli_descripcion_2;
+        this.usu_nombre = usu_nombre;
+        this.usu_password = usu_password;
+        this.usu_foto = usu_foto;
     }
 
     
+    
+    public Mod_GetSetActualizarCliente(String Cli_id, String usu_foto) {
+        this.Cli_id = Cli_id;
+        this.usu_foto = usu_foto;
+    }
+    
+    
+    public Mod_GetSetActualizarCliente() {
+    }    
     
     public String getCli_id() {
         return Cli_id;
